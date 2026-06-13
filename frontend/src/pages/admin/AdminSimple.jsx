@@ -1,0 +1,1 @@
+import{Typography}from'@mui/material';export default function AdminSimple({title}){return <Typography variant="h3" fontWeight={900}>{title}</Typography>}

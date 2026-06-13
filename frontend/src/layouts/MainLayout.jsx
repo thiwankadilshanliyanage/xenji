@@ -1,0 +1,459 @@
+import { useState } from "react";
+import { Link, Outlet, useNavigate } from "react-router-dom";
+import {
+  AppBar,
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItemButton,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Select,
+  Stack,
+  Toolbar,
+  Typography,
+  useTheme,
+} from "@mui/material";
+
+import MenuIcon from "@mui/icons-material/Menu";
+import CloseIcon from "@mui/icons-material/Close";
+import DarkModeIcon from "@mui/icons-material/DarkMode";
+import LightModeIcon from "@mui/icons-material/LightMode";
+import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import TravelExploreIcon from "@mui/icons-material/TravelExplore";
+import DashboardIcon from "@mui/icons-material/Dashboard";
+import PersonIcon from "@mui/icons-material/Person";
+import LogoutIcon from "@mui/icons-material/Logout";
+
+import XenoChatbot from "../components/chatbot/XenoChatbot";
+import LanguageModal from "../components/common/LanguageModal";
+import { useAuth } from "../context/AuthContext";
+import { useLang } from "../context/LanguageContext";
+import { useThemeMode } from "../context/ThemeContext";
+
+const getAvatarUrl = (avatar, name = "User") => {
+  if (avatar?.startsWith("http")) {
+    return avatar;
+  }
+
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(
+    name
+  )}&background=2563EB&color=fff`;
+};
+
+export default function MainLayout() {
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const { t, lang, setLang } = useLang();
+  const { mode, toggleTheme } = useThemeMode();
+  const { user, logout, isAdmin } = useAuth();
+  const navigate = useNavigate();
+  const theme = useTheme();
+
+  const navLinks = [
+    [t("home"), "/"],
+    [t("services"), "/services"],
+    [t("contact"), "/contact"],
+  ];
+
+  const closeMenu = () => {
+    setAnchorEl(null);
+  };
+
+  const handleLogout = async () => {
+    closeMenu();
+
+    if (confirm("Logout?")) {
+      await logout();
+    }
+  };
+
+  const drawer = (
+    <Box sx={{ width: 292, p: 2 }}>
+      <Stack direction="row" alignItems="center" justifyContent="space-between">
+        <Stack direction="row" spacing={1.2} alignItems="center">
+          <Box
+            sx={{
+              width: 40,
+              height: 40,
+              borderRadius: 2.5,
+              display: "grid",
+              placeItems: "center",
+              color: "white",
+              bgcolor: "primary.main",
+            }}
+          >
+            <TravelExploreIcon />
+          </Box>
+          <Box>
+            <Typography fontWeight={900}>Xenji</Typography>
+            <Typography variant="caption" color="text.secondary">
+              Japan life navigator
+            </Typography>
+          </Box>
+        </Stack>
+
+        <IconButton onClick={() => setDrawerOpen(false)}>
+          <CloseIcon />
+        </IconButton>
+      </Stack>
+
+      <Divider sx={{ my: 2 }} />
+
+      <List>
+        {navLinks.map(([label, path]) => (
+          <ListItemButton
+            key={path}
+            component={Link}
+            to={path}
+            onClick={() => setDrawerOpen(false)}
+            sx={{ borderRadius: 2, mb: 0.5 }}
+          >
+            <ListItemText primary={label} />
+          </ListItemButton>
+        ))}
+      </List>
+
+      <Divider sx={{ my: 2 }} />
+
+      {user ? (
+        <Stack spacing={1}>
+          <Button
+            fullWidth
+            variant="contained"
+            onClick={() => {
+              setDrawerOpen(false);
+              navigate(isAdmin ? "/admin" : "/dashboard");
+            }}
+          >
+            {isAdmin ? t("admin") : t("dashboard")}
+          </Button>
+          {!isAdmin && (
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={() => {
+                setDrawerOpen(false);
+                navigate("/profile");
+              }}
+            >
+              {t("profile")}
+            </Button>
+          )}
+          <Button fullWidth color="error" onClick={handleLogout}>
+            {t("logout")}
+          </Button>
+        </Stack>
+      ) : (
+        <Button fullWidth variant="contained" component={Link} to="/login">
+          {t("login")}
+        </Button>
+      )}
+    </Box>
+  );
+
+  return (
+    <Box sx={{ minHeight: "100vh" }}>
+      <AppBar
+        position="sticky"
+        elevation={0}
+        sx={{
+          color: "text.primary",
+          bgcolor:
+            mode === "dark" ? "rgba(15,23,42,.92)" : "rgba(255,255,255,.94)",
+          backdropFilter: "blur(16px)",
+          borderBottom: `1px solid ${theme.palette.divider}`,
+        }}
+      >
+        <Container maxWidth="xl">
+          <Toolbar disableGutters sx={{ minHeight: 70, gap: 1.4 }}>
+            <IconButton
+              onClick={() => setDrawerOpen(true)}
+              sx={{ display: { xs: "inline-flex", md: "none" } }}
+            >
+              <MenuIcon />
+            </IconButton>
+
+            <Stack
+              component={Link}
+              to="/"
+              direction="row"
+              alignItems="center"
+              spacing={1.1}
+              sx={{ mr: { xs: "auto", md: 3 } }}
+            >
+              <Box
+                sx={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 2.4,
+                  display: "grid",
+                  placeItems: "center",
+                  color: "white",
+                  bgcolor: "primary.main",
+                }}
+              >
+                <TravelExploreIcon fontSize="small" />
+              </Box>
+              <Box>
+                <Typography fontWeight={900} lineHeight={1}>
+                  Xenji
+                </Typography>
+                <Typography variant="caption" color="text.secondary">
+                  Navigate Japan smarter
+                </Typography>
+              </Box>
+            </Stack>
+
+            <Box
+              sx={{
+                display: { xs: "none", md: "flex" },
+                alignItems: "center",
+                gap: 0.4,
+                flex: 1,
+              }}
+            >
+              {navLinks.map(([label, path]) => (
+                <Button key={path} component={Link} to={path} color="inherit">
+                  {label}
+                </Button>
+              ))}
+            </Box>
+
+            <Select
+              size="small"
+              value={lang}
+              onChange={(event) => setLang(event.target.value)}
+              sx={{ minWidth: 84 }}
+            >
+              <MenuItem value="en">English</MenuItem>
+              <MenuItem value="ja">日本語</MenuItem>
+            </Select>
+
+            <IconButton onClick={toggleTheme} aria-label="toggle theme">
+              {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+            </IconButton>
+
+            {user && (
+              <IconButton component={Link} to="/notifications" aria-label="notifications">
+                <NotificationsNoneIcon />
+              </IconButton>
+            )}
+
+            {user ? (
+              <>
+                <IconButton onClick={(event) => setAnchorEl(event.currentTarget)}>
+                  <Avatar
+                    src={getAvatarUrl(user.avatar, user.name)}
+                    sx={{ width: 36, height: 36 }}
+                  />
+                </IconButton>
+
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={closeMenu}
+                  PaperProps={{ sx: { width: 260, mt: 1 } }}
+                >
+                  <MenuItem disabled>
+                    <Stack>
+                      <Typography fontWeight={900}>{user.name}</Typography>
+                      <Typography variant="caption">{user.email}</Typography>
+                    </Stack>
+                  </MenuItem>
+                  <Divider />
+                  <MenuItem
+                    onClick={() => {
+                      closeMenu();
+                      navigate(isAdmin ? "/admin" : "/dashboard");
+                    }}
+                  >
+                    <DashboardIcon fontSize="small" sx={{ mr: 1 }} />
+                    {isAdmin ? t("admin") : t("dashboard")}
+                  </MenuItem>
+                  {!isAdmin && (
+                    <MenuItem
+                      onClick={() => {
+                        closeMenu();
+                        navigate("/profile");
+                      }}
+                    >
+                      <PersonIcon fontSize="small" sx={{ mr: 1 }} />
+                      {t("profile")}
+                    </MenuItem>
+                  )}
+                  <Divider />
+                  <MenuItem onClick={handleLogout} sx={{ color: "error.main" }}>
+                    <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
+                    {t("logout")}
+                  </MenuItem>
+                </Menu>
+              </>
+            ) : (
+              <Button variant="contained" component={Link} to="/login">
+                {t("login")}
+              </Button>
+            )}
+          </Toolbar>
+        </Container>
+      </AppBar>
+
+      <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)}>
+        {drawer}
+      </Drawer>
+
+      <Outlet />
+      <Footer />
+      <XenoChatbot />
+      <LanguageModal />
+    </Box>
+  );
+}
+
+function Footer() {
+  const { t, lang, setLang } = useLang();
+
+  return (
+    <Box
+      component="footer"
+      sx={{
+        mt: 0,
+        py: {
+          xs: 5,
+          md: 6,
+        },
+        bgcolor: "background.paper",
+        borderTop: "1px solid",
+        borderColor: "divider",
+      }}
+    >
+      <Container maxWidth="lg">
+        <Stack
+          direction={{
+            xs: "column",
+            md: "row",
+          }}
+          justifyContent="space-evenly"
+          alignItems={{
+            xs: "center",
+            md: "flex-start",
+          }}
+          spacing={{
+            xs: 4,
+            md: 6,
+          }}
+          textAlign="center"
+        >
+          <Box
+            sx={{
+              maxWidth: 360,
+            }}
+          >
+            <Stack
+              direction="row"
+              spacing={1.2}
+              alignItems="center"
+              justifyContent="center"
+            >
+              <Box
+                sx={{
+                  width: 38,
+                  height: 38,
+                  borderRadius: 2.4,
+                  display: "grid",
+                  placeItems: "center",
+                  color: "white",
+                  bgcolor: "primary.main",
+                }}
+              >
+                <TravelExploreIcon fontSize="small" />
+              </Box>
+
+              <Typography variant="h6" fontWeight={900}>
+                Xenji
+              </Typography>
+            </Stack>
+
+            <Typography
+              color="text.secondary"
+              sx={{
+                mt: 2,
+                lineHeight: 1.7,
+              }}
+            >
+              A simple platform that helps foreign residents find services,
+              information and support for life in Japan.
+            </Typography>
+          </Box>
+
+          <Stack
+            direction={{
+              xs: "column",
+              sm: "row",
+            }}
+            spacing={{
+              xs: 4,
+              sm: 7,
+            }}
+            alignItems="flex-start"
+            justifyContent="center"
+            textAlign="center"
+          >
+            <Stack spacing={1} alignItems="center">
+              <Typography fontWeight={900}>Explore</Typography>
+
+              <Button color="inherit" component={Link} to="/services">
+                {t("services")}
+              </Button>
+            </Stack>
+
+            <Stack spacing={1} alignItems="center">
+              <Typography fontWeight={900}>Support</Typography>
+
+              <Button color="inherit" component={Link} to="/contact">
+                {t("contact")}
+              </Button>
+
+              <Button color="inherit" component={Link} to="/privacy">
+                Privacy
+              </Button>
+
+              <Button color="inherit" component={Link} to="/terms">
+                Terms
+              </Button>
+            </Stack>
+
+            <Stack spacing={1.5} alignItems="center">
+              <Typography fontWeight={900}>{t("language")}</Typography>
+
+              <Select
+                size="small"
+                value={lang}
+                onChange={(event) => setLang(event.target.value)}
+                sx={{
+                  minWidth: 126,
+                  borderRadius: 3,
+                }}
+              >
+                <MenuItem value="en">English</MenuItem>
+                <MenuItem value="ja">日本語</MenuItem>
+              </Select>
+            </Stack>
+          </Stack>
+        </Stack>
+
+        <Divider sx={{ my: 4 }} />
+
+        <Typography color="text.secondary" variant="body2" textAlign="center">
+          © 2026 Xenji. All rights reserved.
+        </Typography>
+      </Container>
+    </Box>
+  );
+}

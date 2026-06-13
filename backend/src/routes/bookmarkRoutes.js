@@ -1,0 +1,1 @@
+import express from 'express'; import {protect} from '../middleware/authMiddleware.js'; import {getMyBookmarks,addBookmark,removeBookmark} from '../controllers/bookmarkController.js'; const r=express.Router(); r.use(protect); r.get('/me',getMyBookmarks); r.post('/',addBookmark); r.delete('/:id',removeBookmark); export default r;

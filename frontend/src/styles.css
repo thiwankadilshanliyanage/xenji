@@ -1,0 +1,87 @@
+:root {
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+
+  --xenji-blue: #6366f1;
+  --xenji-border: #e5e7eb;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-x: hidden;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+.MuiCard-root,
+.MuiPaper-root {
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.05) !important;
+}
+
+.clean-section {
+  padding-top: 72px;
+  padding-bottom: 72px;
+}
+
+.subtle-surface {
+  background: linear-gradient(
+    180deg,
+    rgba(99, 102, 241, 0.04),
+    rgba(15, 23, 42, 0.02)
+  );
+}
+
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+}
+
+.auth-page img {
+  user-select: none;
+}
+
+@media (max-width: 768px) {
+  .clean-section {
+    padding-top: 48px;
+    padding-bottom: 48px;
+  }
+
+  .MuiContainer-root {
+    padding-left: 18px !important;
+    padding-right: 18px !important;
+  }
+}
