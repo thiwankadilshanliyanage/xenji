@@ -121,12 +121,7 @@ function HeroSlider() {
             component="img"
             src={slides[index].image}
             alt={slides[index].title}
-            sx={{
-              width: "100%",
-              height: "100%",
-              objectFit: "cover",
-              display: "block",
-            }}
+            sx={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }}
           />
         </motion.div>
       </AnimatePresence>
@@ -312,9 +307,9 @@ export default function Home() {
                 sx={{
                   maxWidth: 680,
                   fontSize: isJapanese
-                    ? { xs: 31, sm: 42, md: 60 }
+                    ? { xs: 24, sm: 40, md: 60 }
                     : { xs: 34, sm: 46, md: 64 },
-                  lineHeight: isJapanese ? 1.22 : 1.08,
+                  lineHeight: isJapanese ? 1.28 : 1.08,
                   fontWeight: 900,
                   letterSpacing: isJapanese ? "-0.04em" : "-0.045em",
                   overflowWrap: "anywhere",
@@ -342,16 +337,18 @@ export default function Home() {
               <Paper
                 sx={{
                   mt: 3,
-                  p: { xs: 0.7, sm: 0.8 },
+                  p: 0.7,
                   display: "flex",
                   flexDirection: { xs: "column", sm: "row" },
-                  maxWidth: 580,
-                  gap: 1,
                   alignItems: "center",
-                  borderRadius: 3,
-                  boxShadow: "none !important",
+                  width: "100%",
+                  maxWidth: 680,
+                  borderRadius: 999,
+                  overflow: "hidden",
                   border: "1px solid",
                   borderColor: "divider",
+                  boxShadow: "none !important",
+                  gap: { xs: 1, sm: 0.8 },
                 }}
               >
                 <TextField
@@ -368,10 +365,15 @@ export default function Home() {
                     ),
                   }}
                   sx={{
-                    px: 1.5,
-                    py: { xs: 0.8, sm: 0 },
+                    flex: 1,
+                    px: 2,
+                    py: { xs: 1, sm: 0 },
+                    minWidth: 0,
                     "& input": {
-                      fontSize: { xs: isJapanese ? 13.5 : 14, sm: 16 },
+                      fontSize: { xs: 14, sm: 15 },
+                      whiteSpace: "nowrap",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
                     },
                   }}
                 />
@@ -380,11 +382,14 @@ export default function Home() {
                   variant="contained"
                   component={Link}
                   to="/services"
-                  fullWidth
                   sx={{
-                    minWidth: { sm: 105 },
-                    borderRadius: 2.5,
+                    width: { xs: "100%", sm: 180 },
+                    minWidth: { sm: 180 },
+                    height: 50,
+                    borderRadius: 999,
                     fontWeight: 900,
+                    flexShrink: 0,
+                    fontSize: "0.95rem",
                   }}
                 >
                   Search
@@ -479,7 +484,12 @@ export default function Home() {
               Start from the support you need today.
             </Typography>
 
-            <Button component={Link} to="/services" endIcon={<ArrowForwardIcon />} sx={{ mt: 1, fontWeight: 800 }}>
+            <Button
+              component={Link}
+              to="/services"
+              endIcon={<ArrowForwardIcon />}
+              sx={{ mt: 1, fontWeight: 800 }}
+            >
               View all services
             </Button>
           </Stack>
