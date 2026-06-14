@@ -2,19 +2,15 @@ import { useEffect, useState } from "react";
 import {
   Avatar,
   Box,
-  Button,
   Card,
   CardContent,
   Chip,
   Container,
   IconButton,
-  InputAdornment,
-  Paper,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 
 import ApartmentIcon from "@mui/icons-material/Apartment";
@@ -25,7 +21,6 @@ import DirectionsCarIcon from "@mui/icons-material/DirectionsCar";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import LanguageIcon from "@mui/icons-material/Language";
 import MovingIcon from "@mui/icons-material/Moving";
-import SearchIcon from "@mui/icons-material/Search";
 import SchoolIcon from "@mui/icons-material/School";
 import SupportAgentIcon from "@mui/icons-material/SupportAgent";
 import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
@@ -40,6 +35,27 @@ const categories = [
   { label: "Medical", icon: <HealthAndSafetyIcon />, path: "/services?category=Hospital / Medical" },
   { label: "Driving", icon: <DirectionsCarIcon />, path: "/services?category=Driving School" },
   { label: "Education", icon: <SchoolIcon />, path: "/services?category=Japanese Schools" },
+];
+
+const quickActions = [
+  {
+    title: "Housing",
+    desc: "Apartments & rooms",
+    path: "/services?category=Housing",
+    icon: <ApartmentIcon />,
+  },
+  {
+    title: "Jobs",
+    desc: "Career support",
+    path: "/services?category=Jobs",
+    icon: <WorkIcon />,
+  },
+  {
+    title: "All services",
+    desc: "Find support",
+    path: "/services",
+    icon: <SupportAgentIcon />,
+  },
 ];
 
 const features = [
@@ -253,15 +269,7 @@ function HeroSlider() {
 
 export default function Home() {
   const { t, lang } = useLang();
-  const navigate = useNavigate();
-
   const isJapanese = lang === "ja";
-
-  const handleSearch = (event) => {
-    if (event.key !== "Enter") return;
-    const value = event.target.value.trim();
-    if (value) navigate(`/services?search=${encodeURIComponent(value)}`);
-  };
 
   return (
     <Box sx={{ overflowX: "hidden" }}>
@@ -334,86 +342,61 @@ export default function Home() {
                 {t("tagline")}
               </Typography>
 
-              <Paper
+              <Box
                 sx={{
-                  mt: 3,
-                  p: 0.7,
-                  display: "flex",
-                  flexDirection: { xs: "column", sm: "row" },
-                  alignItems: "center",
-                  width: "100%",
-                  maxWidth: 680,
-                  borderRadius: 999,
-                  overflow: "hidden",
-                  border: "1px solid",
-                  borderColor: "divider",
-                  boxShadow: "none !important",
-                  gap: { xs: 1, sm: 0.8 },
+                  mt: 4,
+                  display: "grid",
+                  gridTemplateColumns: { xs: "1fr", sm: "repeat(3, 1fr)" },
+                  gap: 2,
+                  maxWidth: 650,
                 }}
               >
-                <TextField
-                  fullWidth
-                  placeholder={t("searchPlaceholder")}
-                  onKeyDown={handleSearch}
-                  variant="standard"
-                  InputProps={{
-                    disableUnderline: true,
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchIcon color="action" />
-                      </InputAdornment>
-                    ),
-                  }}
-                  sx={{
-                    flex: 1,
-                    px: 2,
-                    py: { xs: 1, sm: 0 },
-                    minWidth: 0,
-                    "& input": {
-                      fontSize: { xs: 14, sm: 15 },
-                      whiteSpace: "nowrap",
-                      overflow: "hidden",
-                      textOverflow: "ellipsis",
-                    },
-                  }}
-                />
+                {quickActions.map((item) => (
+                  <Card
+                    key={item.title}
+                    component={Link}
+                    to={item.path}
+                    sx={{
+                      textDecoration: "none",
+                      color: "text.primary",
+                      p: 2,
+                      borderRadius: 4,
+                      bgcolor: "background.paper",
+                      border: "1px solid",
+                      borderColor: "divider",
+                      boxShadow: "none !important",
+                      transition: "all .22s ease",
+                      "&:hover": {
+                        transform: "translateY(-4px)",
+                        borderColor: "primary.main",
+                      },
+                    }}
+                  >
+                    <Stack direction="row" alignItems="center" justifyContent="space-between">
+                      <Avatar
+                        sx={{
+                          bgcolor: "primary.main",
+                          color: "primary.contrastText",
+                          width: 42,
+                          height: 42,
+                        }}
+                      >
+                        {item.icon}
+                      </Avatar>
 
-                <Button
-                  variant="contained"
-                  component={Link}
-                  to="/services"
-                  sx={{
-                    width: { xs: "100%", sm: 180 },
-                    minWidth: { sm: 180 },
-                    height: 50,
-                    borderRadius: 999,
-                    fontWeight: 900,
-                    flexShrink: 0,
-                    fontSize: "0.95rem",
-                  }}
-                >
-                  Search
-                </Button>
-              </Paper>
+                      <ArrowForwardIcon color="primary" />
+                    </Stack>
 
-              <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5} sx={{ mt: 2.5 }}>
-                <Button
-                  variant="contained"
-                  size="large"
-                  component={Link}
-                  to="/services"
-                  endIcon={<ArrowForwardIcon />}
-                  fullWidth
-                  sx={{
-                    maxWidth: { xs: "100%", sm: 260 },
-                    py: 1.3,
-                    borderRadius: 3,
-                    fontWeight: 900,
-                  }}
-                >
-                  {t("exploreServices")}
-                </Button>
-              </Stack>
+                    <Typography fontWeight={900} sx={{ mt: 1.6 }}>
+                      {item.title}
+                    </Typography>
+
+                    <Typography variant="body2" color="text.secondary" sx={{ mt: 0.4 }}>
+                      {item.desc}
+                    </Typography>
+                  </Card>
+                ))}
+              </Box>
             </Box>
 
             <HeroSlider />
@@ -483,15 +466,6 @@ export default function Home() {
             <Typography color="text.secondary" sx={{ mt: 1 }}>
               Start from the support you need today.
             </Typography>
-
-            <Button
-              component={Link}
-              to="/services"
-              endIcon={<ArrowForwardIcon />}
-              sx={{ mt: 1, fontWeight: 800 }}
-            >
-              View all services
-            </Button>
           </Stack>
 
           <Box
@@ -536,12 +510,7 @@ export default function Home() {
                   {category.icon}
                 </Avatar>
 
-                <Typography
-                  sx={{
-                    fontWeight: 800,
-                    fontSize: { xs: "0.9rem", md: "1rem" },
-                  }}
-                >
+                <Typography sx={{ fontWeight: 800, fontSize: { xs: "0.9rem", md: "1rem" } }}>
                   {category.label}
                 </Typography>
               </Box>
