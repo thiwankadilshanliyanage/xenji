@@ -70,7 +70,7 @@ export default function MainLayout() {
   };
 
   const drawer = (
-    <Box sx={{ width: 290, p: 2 }}>
+    <Box sx={{ width: 292, p: 2 }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Stack direction="row" spacing={1.2} alignItems="center">
           <Box
@@ -90,7 +90,7 @@ export default function MainLayout() {
           <Box>
             <Typography fontWeight={900}>Xenji</Typography>
             <Typography variant="caption" color="text.secondary">
-              Japan life navigator
+              Navigate Japan smarter
             </Typography>
           </Box>
         </Stack>
@@ -115,6 +115,32 @@ export default function MainLayout() {
           </ListItemButton>
         ))}
       </List>
+
+      <Divider sx={{ my: 2 }} />
+
+      <Stack spacing={1.5}>
+        <Typography fontWeight={900}>Language</Typography>
+
+        <Select
+          fullWidth
+          size="small"
+          value={lang}
+          onChange={(event) => setLang(event.target.value)}
+          sx={{ borderRadius: 3 }}
+        >
+          <MenuItem value="en">English</MenuItem>
+          <MenuItem value="ja">日本語</MenuItem>
+        </Select>
+
+        <Button
+          fullWidth
+          variant="outlined"
+          onClick={toggleTheme}
+          startIcon={mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
+        >
+          {mode === "dark" ? "Light mode" : "Dark mode"}
+        </Button>
+      </Stack>
 
       <Divider sx={{ my: 2 }} />
 
@@ -170,7 +196,7 @@ export default function MainLayout() {
         sx={{
           color: "text.primary",
           bgcolor:
-            mode === "dark" ? "rgba(15,23,42,.96)" : "rgba(255,255,255,.96)",
+            mode === "dark" ? "rgba(15,23,42,.97)" : "rgba(255,255,255,.97)",
           backdropFilter: "blur(16px)",
           borderBottom: `1px solid ${theme.palette.divider}`,
         }}
@@ -180,9 +206,7 @@ export default function MainLayout() {
             disableGutters
             sx={{
               minHeight: { xs: 58, md: 70 },
-              gap: { xs: 0.8, md: 1.4 },
-              display: "flex",
-              alignItems: "center",
+              gap: { xs: 0.7, md: 1.4 },
             }}
           >
             <IconButton
@@ -208,7 +232,6 @@ export default function MainLayout() {
                 textDecoration: "none",
                 color: "inherit",
                 minWidth: 0,
-                flexShrink: 1,
               }}
             >
               <Box
@@ -226,15 +249,22 @@ export default function MainLayout() {
                 <TravelExploreIcon fontSize="small" />
               </Box>
 
-              <Box sx={{ display: { xs: "none", sm: "block" }, minWidth: 0 }}>
-                <Typography fontWeight={900} lineHeight={1} sx={{ fontSize: "1rem" }}>
+              <Box sx={{ display: { xs: "block", sm: "block" }, minWidth: 0 }}>
+                <Typography
+                  fontWeight={900}
+                  lineHeight={1}
+                  sx={{ fontSize: { xs: "0.95rem", md: "1rem" } }}
+                >
                   Xenji
                 </Typography>
 
                 <Typography
                   variant="caption"
                   color="text.secondary"
-                  sx={{ display: "block", whiteSpace: "nowrap" }}
+                  sx={{
+                    display: { xs: "none", sm: "block" },
+                    whiteSpace: "nowrap",
+                  }}
                 >
                   Navigate Japan smarter
                 </Typography>
@@ -261,17 +291,9 @@ export default function MainLayout() {
               value={lang}
               onChange={(event) => setLang(event.target.value)}
               sx={{
-                minWidth: { xs: 68, sm: 84 },
-                maxWidth: { xs: 76, sm: 110 },
+                display: { xs: "none", sm: "inline-flex" },
+                minWidth: 92,
                 borderRadius: 3,
-                flexShrink: 0,
-                "& .MuiSelect-select": {
-                  py: { xs: 0.8, md: 1 },
-                  px: { xs: 1, md: 1.5 },
-                  fontSize: { xs: "0.78rem", md: "0.9rem" },
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                },
               }}
             >
               <MenuItem value="en">English</MenuItem>
@@ -281,7 +303,12 @@ export default function MainLayout() {
             <IconButton
               onClick={toggleTheme}
               aria-label="toggle theme"
-              sx={{ width: { xs: 36, md: 40 }, height: { xs: 36, md: 40 }, flexShrink: 0 }}
+              sx={{
+                display: { xs: "none", sm: "inline-flex" },
+                width: 38,
+                height: 38,
+                flexShrink: 0,
+              }}
             >
               {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
             </IconButton>
@@ -361,8 +388,8 @@ export default function MainLayout() {
                 to="/login"
                 sx={{
                   minWidth: { xs: 70, sm: 82, md: 96 },
-                  px: { xs: 1.3, md: 2.5 },
-                  py: { xs: 0.8, md: 1 },
+                  px: { xs: 1.2, md: 2.5 },
+                  py: { xs: 0.75, md: 1 },
                   fontSize: { xs: "0.78rem", md: "0.9rem" },
                   borderRadius: 3,
                   flexShrink: 0,
@@ -431,8 +458,8 @@ function Footer() {
             </Stack>
 
             <Typography color="text.secondary" sx={{ mt: 2, lineHeight: 1.7 }}>
-              A simple platform that helps foreign residents find services,
-              information and support for life in Japan.
+              A simple platform that helps foreign residents find services and
+              support for life in Japan.
             </Typography>
           </Box>
 
