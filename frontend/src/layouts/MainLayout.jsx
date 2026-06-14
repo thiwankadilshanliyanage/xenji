@@ -38,9 +38,7 @@ import { useLang } from "../context/LanguageContext";
 import { useThemeMode } from "../context/ThemeContext";
 
 const getAvatarUrl = (avatar, name = "User") => {
-  if (avatar?.startsWith("http")) {
-    return avatar;
-  }
+  if (avatar?.startsWith("http")) return avatar;
 
   return `https://ui-avatars.com/api/?name=${encodeURIComponent(
     name
@@ -50,9 +48,11 @@ const getAvatarUrl = (avatar, name = "User") => {
 export default function MainLayout() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+
   const { t, lang, setLang } = useLang();
   const { mode, toggleTheme } = useThemeMode();
   const { user, logout, isAdmin } = useAuth();
+
   const navigate = useNavigate();
   const theme = useTheme();
 
@@ -62,20 +62,15 @@ export default function MainLayout() {
     [t("contact"), "/contact"],
   ];
 
-  const closeMenu = () => {
-    setAnchorEl(null);
-  };
+  const closeMenu = () => setAnchorEl(null);
 
   const handleLogout = async () => {
     closeMenu();
-
-    if (confirm("Logout?")) {
-      await logout();
-    }
+    if (confirm("Logout?")) await logout();
   };
 
   const drawer = (
-    <Box sx={{ width: 292, p: 2 }}>
+    <Box sx={{ width: 290, p: 2 }}>
       <Stack direction="row" alignItems="center" justifyContent="space-between">
         <Stack direction="row" spacing={1.2} alignItems="center">
           <Box
@@ -91,6 +86,7 @@ export default function MainLayout() {
           >
             <TravelExploreIcon />
           </Box>
+
           <Box>
             <Typography fontWeight={900}>Xenji</Typography>
             <Typography variant="caption" color="text.secondary">
@@ -134,6 +130,7 @@ export default function MainLayout() {
           >
             {isAdmin ? t("admin") : t("dashboard")}
           </Button>
+
           {!isAdmin && (
             <Button
               fullWidth
@@ -146,12 +143,19 @@ export default function MainLayout() {
               {t("profile")}
             </Button>
           )}
+
           <Button fullWidth color="error" onClick={handleLogout}>
             {t("logout")}
           </Button>
         </Stack>
       ) : (
-        <Button fullWidth variant="contained" component={Link} to="/login">
+        <Button
+          fullWidth
+          variant="contained"
+          component={Link}
+          to="/login"
+          onClick={() => setDrawerOpen(false)}
+        >
           {t("login")}
         </Button>
       )}
@@ -159,23 +163,36 @@ export default function MainLayout() {
   );
 
   return (
-    <Box sx={{ minHeight: "100vh" }}>
+    <Box sx={{ minHeight: "100vh", overflowX: "hidden" }}>
       <AppBar
         position="sticky"
         elevation={0}
         sx={{
           color: "text.primary",
           bgcolor:
-            mode === "dark" ? "rgba(15,23,42,.92)" : "rgba(255,255,255,.94)",
+            mode === "dark" ? "rgba(15,23,42,.96)" : "rgba(255,255,255,.96)",
           backdropFilter: "blur(16px)",
           borderBottom: `1px solid ${theme.palette.divider}`,
         }}
       >
-        <Container maxWidth="xl">
-          <Toolbar disableGutters sx={{ minHeight: 70, gap: 1.4 }}>
+        <Container maxWidth="xl" sx={{ px: { xs: 1.2, sm: 2, md: 3 } }}>
+          <Toolbar
+            disableGutters
+            sx={{
+              minHeight: { xs: 58, md: 70 },
+              gap: { xs: 0.8, md: 1.4 },
+              display: "flex",
+              alignItems: "center",
+            }}
+          >
             <IconButton
               onClick={() => setDrawerOpen(true)}
-              sx={{ display: { xs: "inline-flex", md: "none" } }}
+              sx={{
+                display: { xs: "inline-flex", md: "none" },
+                width: 38,
+                height: 38,
+                flexShrink: 0,
+              }}
             >
               <MenuIcon />
             </IconButton>
@@ -185,27 +202,40 @@ export default function MainLayout() {
               to="/"
               direction="row"
               alignItems="center"
-              spacing={1.1}
-              sx={{ mr: { xs: "auto", md: 3 } }}
+              spacing={1}
+              sx={{
+                mr: { xs: "auto", md: 3 },
+                textDecoration: "none",
+                color: "inherit",
+                minWidth: 0,
+                flexShrink: 1,
+              }}
             >
               <Box
                 sx={{
-                  width: 38,
-                  height: 38,
-                  borderRadius: 2.4,
+                  width: { xs: 34, md: 38 },
+                  height: { xs: 34, md: 38 },
+                  borderRadius: 2,
                   display: "grid",
                   placeItems: "center",
                   color: "white",
                   bgcolor: "primary.main",
+                  flexShrink: 0,
                 }}
               >
                 <TravelExploreIcon fontSize="small" />
               </Box>
-              <Box>
-                <Typography fontWeight={900} lineHeight={1}>
+
+              <Box sx={{ display: { xs: "none", sm: "block" }, minWidth: 0 }}>
+                <Typography fontWeight={900} lineHeight={1} sx={{ fontSize: "1rem" }}>
                   Xenji
                 </Typography>
-                <Typography variant="caption" color="text.secondary">
+
+                <Typography
+                  variant="caption"
+                  color="text.secondary"
+                  sx={{ display: "block", whiteSpace: "nowrap" }}
+                >
                   Navigate Japan smarter
                 </Typography>
               </Box>
@@ -230,28 +260,52 @@ export default function MainLayout() {
               size="small"
               value={lang}
               onChange={(event) => setLang(event.target.value)}
-              sx={{ minWidth: 84 }}
+              sx={{
+                minWidth: { xs: 68, sm: 84 },
+                maxWidth: { xs: 76, sm: 110 },
+                borderRadius: 3,
+                flexShrink: 0,
+                "& .MuiSelect-select": {
+                  py: { xs: 0.8, md: 1 },
+                  px: { xs: 1, md: 1.5 },
+                  fontSize: { xs: "0.78rem", md: "0.9rem" },
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                },
+              }}
             >
               <MenuItem value="en">English</MenuItem>
               <MenuItem value="ja">日本語</MenuItem>
             </Select>
 
-            <IconButton onClick={toggleTheme} aria-label="toggle theme">
+            <IconButton
+              onClick={toggleTheme}
+              aria-label="toggle theme"
+              sx={{ width: { xs: 36, md: 40 }, height: { xs: 36, md: 40 }, flexShrink: 0 }}
+            >
               {mode === "dark" ? <LightModeIcon /> : <DarkModeIcon />}
             </IconButton>
 
             {user && (
-              <IconButton component={Link} to="/notifications" aria-label="notifications">
+              <IconButton
+                component={Link}
+                to="/notifications"
+                aria-label="notifications"
+                sx={{ display: { xs: "none", sm: "inline-flex" } }}
+              >
                 <NotificationsNoneIcon />
               </IconButton>
             )}
 
             {user ? (
               <>
-                <IconButton onClick={(event) => setAnchorEl(event.currentTarget)}>
+                <IconButton
+                  onClick={(event) => setAnchorEl(event.currentTarget)}
+                  sx={{ flexShrink: 0 }}
+                >
                   <Avatar
                     src={getAvatarUrl(user.avatar, user.name)}
-                    sx={{ width: 36, height: 36 }}
+                    sx={{ width: { xs: 32, md: 36 }, height: { xs: 32, md: 36 } }}
                   />
                 </IconButton>
 
@@ -267,7 +321,9 @@ export default function MainLayout() {
                       <Typography variant="caption">{user.email}</Typography>
                     </Stack>
                   </MenuItem>
+
                   <Divider />
+
                   <MenuItem
                     onClick={() => {
                       closeMenu();
@@ -277,6 +333,7 @@ export default function MainLayout() {
                     <DashboardIcon fontSize="small" sx={{ mr: 1 }} />
                     {isAdmin ? t("admin") : t("dashboard")}
                   </MenuItem>
+
                   {!isAdmin && (
                     <MenuItem
                       onClick={() => {
@@ -288,7 +345,9 @@ export default function MainLayout() {
                       {t("profile")}
                     </MenuItem>
                   )}
+
                   <Divider />
+
                   <MenuItem onClick={handleLogout} sx={{ color: "error.main" }}>
                     <LogoutIcon fontSize="small" sx={{ mr: 1 }} />
                     {t("logout")}
@@ -296,7 +355,19 @@ export default function MainLayout() {
                 </Menu>
               </>
             ) : (
-              <Button variant="contained" component={Link} to="/login">
+              <Button
+                variant="contained"
+                component={Link}
+                to="/login"
+                sx={{
+                  minWidth: { xs: 70, sm: 82, md: 96 },
+                  px: { xs: 1.3, md: 2.5 },
+                  py: { xs: 0.8, md: 1 },
+                  fontSize: { xs: "0.78rem", md: "0.9rem" },
+                  borderRadius: 3,
+                  flexShrink: 0,
+                }}
+              >
                 {t("login")}
               </Button>
             )}
@@ -324,43 +395,22 @@ function Footer() {
       component="footer"
       sx={{
         mt: 0,
-        py: {
-          xs: 5,
-          md: 6,
-        },
+        py: { xs: 4, md: 6 },
         bgcolor: "background.paper",
         borderTop: "1px solid",
         borderColor: "divider",
       }}
     >
-      <Container maxWidth="lg">
+      <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
         <Stack
-          direction={{
-            xs: "column",
-            md: "row",
-          }}
+          direction={{ xs: "column", md: "row" }}
           justifyContent="space-evenly"
-          alignItems={{
-            xs: "center",
-            md: "flex-start",
-          }}
-          spacing={{
-            xs: 4,
-            md: 6,
-          }}
+          alignItems={{ xs: "center", md: "flex-start" }}
+          spacing={{ xs: 3.5, md: 6 }}
           textAlign="center"
         >
-          <Box
-            sx={{
-              maxWidth: 360,
-            }}
-          >
-            <Stack
-              direction="row"
-              spacing={1.2}
-              alignItems="center"
-              justifyContent="center"
-            >
+          <Box sx={{ maxWidth: 360 }}>
+            <Stack direction="row" spacing={1.2} alignItems="center" justifyContent="center">
               <Box
                 sx={{
                   width: 38,
@@ -380,28 +430,16 @@ function Footer() {
               </Typography>
             </Stack>
 
-            <Typography
-              color="text.secondary"
-              sx={{
-                mt: 2,
-                lineHeight: 1.7,
-              }}
-            >
+            <Typography color="text.secondary" sx={{ mt: 2, lineHeight: 1.7 }}>
               A simple platform that helps foreign residents find services,
               information and support for life in Japan.
             </Typography>
           </Box>
 
           <Stack
-            direction={{
-              xs: "column",
-              sm: "row",
-            }}
-            spacing={{
-              xs: 4,
-              sm: 7,
-            }}
-            alignItems="flex-start"
+            direction={{ xs: "column", sm: "row" }}
+            spacing={{ xs: 3, sm: 6 }}
+            alignItems="center"
             justifyContent="center"
             textAlign="center"
           >
@@ -436,10 +474,7 @@ function Footer() {
                 size="small"
                 value={lang}
                 onChange={(event) => setLang(event.target.value)}
-                sx={{
-                  minWidth: 126,
-                  borderRadius: 3,
-                }}
+                sx={{ minWidth: 126, borderRadius: 3 }}
               >
                 <MenuItem value="en">English</MenuItem>
                 <MenuItem value="ja">日本語</MenuItem>
