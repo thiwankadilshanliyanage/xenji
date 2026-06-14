@@ -98,13 +98,13 @@ function HeroSlider() {
         width: "100%",
         maxWidth: { xs: "100%", md: 620 },
         mx: "auto",
-        borderRadius: { xs: 4, md: 4 },
+        borderRadius: 4,
         overflow: "hidden",
         border: "1px solid",
         borderColor: "divider",
         bgcolor: "background.paper",
         position: "relative",
-        height: { xs: 260, sm: 340, md: 430 },
+        height: { xs: 250, sm: 330, md: 430 },
         boxShadow: "0 18px 48px rgba(0,0,0,0.16)",
       }}
     >
@@ -159,7 +159,7 @@ function HeroSlider() {
           position: "absolute",
           left: { xs: 18, md: 28 },
           right: { xs: 18, md: 28 },
-          bottom: { xs: 42, md: 58 },
+          bottom: { xs: 40, md: 58 },
           color: "#fff",
         }}
       >
@@ -174,7 +174,7 @@ function HeroSlider() {
             <Typography
               variant="h3"
               sx={{
-                fontSize: { xs: 28, sm: 34, md: 42 },
+                fontSize: { xs: 27, sm: 34, md: 42 },
                 fontWeight: 900,
                 letterSpacing: "-0.04em",
                 lineHeight: 1.05,
@@ -236,15 +236,7 @@ function HeroSlider() {
         <ChevronRightIcon />
       </IconButton>
 
-      <Stack
-        direction="row"
-        spacing={1}
-        sx={{
-          position: "absolute",
-          left: { xs: 18, md: 28 },
-          bottom: 18,
-        }}
-      >
+      <Stack direction="row" spacing={1} sx={{ position: "absolute", left: 18, bottom: 18 }}>
         {slides.map((slide, slideIndex) => (
           <Box
             key={slide.title}
@@ -265,12 +257,13 @@ function HeroSlider() {
 }
 
 export default function Home() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const navigate = useNavigate();
+
+  const isJapanese = lang === "ja";
 
   const handleSearch = (event) => {
     if (event.key !== "Enter") return;
-
     const value = event.target.value.trim();
     if (value) navigate(`/services?search=${encodeURIComponent(value)}`);
   };
@@ -282,7 +275,7 @@ export default function Home() {
           bgcolor: "background.default",
           borderBottom: "1px solid",
           borderColor: "divider",
-          py: { xs: 3.5, md: 8 },
+          py: { xs: 3.2, md: 8 },
         }}
       >
         <Container maxWidth="xl" sx={{ px: { xs: 2, sm: 3, md: 4 } }}>
@@ -294,28 +287,38 @@ export default function Home() {
               alignItems: "center",
             }}
           >
-            <Box>
+            <Box sx={{ minWidth: 0 }}>
               <Chip
                 label="Support for foreigners in Japan"
                 color="primary"
                 variant="outlined"
                 sx={{
                   mb: 2,
-                  fontWeight: 700,
+                  fontWeight: 800,
                   maxWidth: "100%",
-                  fontSize: { xs: 12, md: 13 },
+                  height: "auto",
+                  py: 0.6,
+                  "& .MuiChip-label": {
+                    whiteSpace: "normal",
+                    overflow: "visible",
+                    textOverflow: "clip",
+                    fontSize: { xs: 12.5, md: 13 },
+                  },
                 }}
               />
 
               <Typography
                 variant="h1"
                 sx={{
-                  maxWidth: 650,
-                  fontSize: { xs: 32, sm: 46, md: 64 },
-                  lineHeight: 1.08,
+                  maxWidth: 680,
+                  fontSize: isJapanese
+                    ? { xs: 31, sm: 42, md: 60 }
+                    : { xs: 34, sm: 46, md: 64 },
+                  lineHeight: isJapanese ? 1.22 : 1.08,
                   fontWeight: 900,
-                  letterSpacing: "-0.045em",
-                  wordBreak: "keep-all",
+                  letterSpacing: isJapanese ? "-0.04em" : "-0.045em",
+                  overflowWrap: "anywhere",
+                  wordBreak: "normal",
                 }}
               >
                 {t("heroTitle")}
@@ -327,9 +330,10 @@ export default function Home() {
                 sx={{
                   mt: 2,
                   maxWidth: 570,
-                  lineHeight: 1.65,
+                  lineHeight: isJapanese ? 1.8 : 1.65,
                   fontWeight: 500,
                   fontSize: { xs: 16, md: 20 },
+                  overflowWrap: "anywhere",
                 }}
               >
                 {t("tagline")}
@@ -367,7 +371,7 @@ export default function Home() {
                     px: 1.5,
                     py: { xs: 0.8, sm: 0 },
                     "& input": {
-                      fontSize: { xs: 14, sm: 16 },
+                      fontSize: { xs: isJapanese ? 13.5 : 14, sm: 16 },
                     },
                   }}
                 />
@@ -379,8 +383,8 @@ export default function Home() {
                   fullWidth
                   sx={{
                     minWidth: { sm: 105 },
-                    display: { xs: "flex", sm: "inline-flex" },
                     borderRadius: 2.5,
+                    fontWeight: 900,
                   }}
                 >
                   Search
@@ -396,7 +400,7 @@ export default function Home() {
                   endIcon={<ArrowForwardIcon />}
                   fullWidth
                   sx={{
-                    maxWidth: { xs: "100%", sm: 230 },
+                    maxWidth: { xs: "100%", sm: 260 },
                     py: 1.3,
                     borderRadius: 3,
                     fontWeight: 900,
@@ -432,14 +436,7 @@ export default function Home() {
               }}
             >
               <CardContent sx={{ p: { xs: 2.4, md: 3 } }}>
-                <Avatar
-                  sx={{
-                    bgcolor: "primary.main",
-                    mb: 2,
-                    width: 44,
-                    height: 44,
-                  }}
-                >
+                <Avatar sx={{ bgcolor: "primary.main", mb: 2, width: 44, height: 44 }}>
                   {item.icon}
                 </Avatar>
 
@@ -482,12 +479,7 @@ export default function Home() {
               Start from the support you need today.
             </Typography>
 
-            <Button
-              component={Link}
-              to="/services"
-              endIcon={<ArrowForwardIcon />}
-              sx={{ mt: 1, fontWeight: 800 }}
-            >
+            <Button component={Link} to="/services" endIcon={<ArrowForwardIcon />} sx={{ mt: 1, fontWeight: 800 }}>
               View all services
             </Button>
           </Stack>
